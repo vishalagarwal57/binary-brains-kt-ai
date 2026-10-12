@@ -1,0 +1,17 @@
+# Secrets
+.env
+.env.*
+!.env.example
+backend/.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
