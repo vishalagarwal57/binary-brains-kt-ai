@@ -15,3 +15,7 @@ node_modules/
 
 # macOS
 .DS_Store
+
+# Personal and duplicate documents
+Vishal__.pdf
+backend/AWS_Technical_Essentials.pdf

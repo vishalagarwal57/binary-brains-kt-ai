@@ -4,254 +4,300 @@
 <head>
 
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Binary Brains KT AI — AI-Powered Knowledge Transfer Platform with semantic search, assignment tracking, and SharePoint integration.">
 
     <title>Binary Brains KT AI</title>
 
-    <link
-        rel="stylesheet"
-        href="styles.css"
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
 
-    <div class="container">
+    <!-- ======================== HEADER ======================== -->
 
-        <!-- Header -->
-
-        <header>
-
-            <h1>🚀 Binary Brains KT AI</h1>
-
-            <p class="subtitle">
-                AI-Powered Knowledge Mining & KT Delivery Platform
-            </p>
-
-        </header>
-
-        <!-- Upload Notification -->
-
-        <div
-            id="notification"
-            class="notification"
-            style="display:none;"
-        >
-        </div>
-
-        <!-- Upload Card -->
-
-        <div class="card upload-card">
-
-            <h3>📂 Upload KT Document</h3>
-
-            <input
-                type="file"
-                id="fileInput"
-            >
-
-            <button
-                id="uploadBtn"
-                class="upload-btn"
-                onclick="uploadFile()"
-            >
-                Upload Document
-            </button>
-
-        </div>
-
-        <!-- Action Buttons -->
-
-        <div class="buttons">
-
-            <button
-                class="action-btn"
-                onclick="generateSummary()"
-            >
-                📄 Generate Summary
-            </button>
-
-            <button
-                class="action-btn"
-                onclick="generateRunbook()"
-            >
-                📘 Generate Runbook
-            </button>
-
-            <button
-                class="action-btn"
-                onclick="generateAssessment()"
-            >
-                ✅ Generate Assessment
-            </button>
-
-        </div>
-
-        <!-- Ask Question -->
-
-        <div class="question-section">
-
-            <input
-                type="text"
-                id="question"
-                placeholder="Ask KT Question..."
-            >
-
-            <button onclick="askQuestion()">
-                🔍 Ask
-            </button>
-
-        </div>
-
-        <!-- AI Thinking Section -->
-
-        <div
-            id="thinking"
-            class="thinking"
-            style="display:none;"
-        >
-
-            <div class="thinking-text">
-
-                🤖 AI is processing your request
-
-                <span id="dots"></span>
-
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">🧠</span>
+                <div>
+                    <h1>Binary Brains KT AI</h1>
+                    <p class="tagline">AI-Powered Knowledge Transfer Platform</p>
+                </div>
             </div>
-
-        </div>
-
-        <!-- Spinner -->
-
-        <div
-            class="spinner"
-            id="spinner"
-            style="display:none;"
-        >
-        </div>
-
-        <!-- Result Section -->
-
-        <div class="output">
-
-            <div class="output-header">
-
-                <h3>📊 Analysis Result</h3>
-
+            <div id="docBadge" class="doc-badge" style="display:none;">
+                <span class="badge-dot"></span>
+                <span id="docBadgeText">Document Loaded</span>
             </div>
+        </div>
+    </header>
 
-            <!-- Standard Result Container -->
+    <!-- ======================== NOTIFICATION ======================== -->
 
-            <div
-                id="result"
-                class="result-card"
-            >
+    <div id="notification" class="notification" role="alert" aria-live="polite"></div>
 
-                <div class="welcome-message">
+    <!-- ======================== MAIN LAYOUT ======================== -->
 
-                    <h2>
-                        Welcome to Binary Brains KT AI
-                    </h2>
+    <main class="main-layout">
 
-                    <p>
-                        Upload a KT document and
-                        select an action.
-                    </p>
+        <!-- ===== SIDEBAR / TABS ===== -->
 
-                    <ul>
+        <nav class="sidebar" aria-label="Main Navigation">
 
-                        <li>
-                            Generate Knowledge Summary
-                        </li>
+            <button id="tab-documents" class="nav-btn active" onclick="switchTab('documents')">
+                <span class="nav-icon">📂</span>
+                <span>Documents</span>
+            </button>
 
-                        <li>
-                            Create Support Runbook
-                        </li>
+            <button id="tab-generate" class="nav-btn" onclick="switchTab('generate')">
+                <span class="nav-icon">✨</span>
+                <span>Generate</span>
+            </button>
 
-                        <li>
-                            Ask Questions from KT
-                        </li>
+            <button id="tab-ask" class="nav-btn" onclick="switchTab('ask')">
+                <span class="nav-icon">🔍</span>
+                <span>Ask AI</span>
+            </button>
 
-                        <li>
-                            Generate Readiness Assessment
-                        </li>
+            <button id="tab-assignments" class="nav-btn" onclick="switchTab('assignments')">
+                <span class="nav-icon">📋</span>
+                <span>Assignments</span>
+                <span id="pendingBadge" class="pending-badge" style="display:none;">0</span>
+            </button>
 
-                    </ul>
+        </nav>
 
-                    <br>
+        <!-- ===== CONTENT PANELS ===== -->
 
-                    <p>
-                        Start by uploading a
-                        Knowledge Transfer document.
-                    </p>
+        <div class="content-area">
 
+            <!-- ============================
+                 TAB 1: DOCUMENTS
+            ============================= -->
+
+            <section id="panel-documents" class="panel active">
+
+                <!-- Upload Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📤</span>
+                        <h2>Upload KT Document</h2>
+                    </div>
+                    <p class="card-desc">Upload a PDF from your computer to load it into the AI knowledge base.</p>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="fileInput" accept=".pdf,.docx,.txt" onchange="handleFileSelect(this)">
+                        <div class="upload-prompt" id="uploadPrompt">
+                            <span class="upload-icon">📄</span>
+                            <p>Drag & drop or <label for="fileInput" class="file-link">browse file</label></p>
+                            <p class="upload-hint">PDF, DOCX, or TXT supported</p>
+                        </div>
+                        <div id="selectedFile" class="selected-file" style="display:none;"></div>
+                    </div>
+                    <button id="uploadBtn" class="btn btn-primary" onclick="uploadFile()">
+                        Upload &amp; Index Document
+                    </button>
                 </div>
 
-            </div>
+                <!-- SharePoint Card -->
+                <div class="card sharepoint-card">
+                    <div class="card-header">
+                        <span class="card-icon">☁️</span>
+                        <h2>SharePoint Documents</h2>
+                        <span id="spStatus" class="sp-status-badge checking">Checking...</span>
+                    </div>
+                    <p class="card-desc">Browse and load documents directly from your team's SharePoint library.</p>
 
-            <!-- Quiz Container -->
+                    <div id="spNotConfigured" class="info-box" style="display:none;">
+                        <h3>⚙️ Setup Required</h3>
+                        <p>To connect SharePoint, add these 4 variables to your Render backend environment:</p>
+                        <div class="env-vars">
+                            <code>SHAREPOINT_TENANT_ID</code>
+                            <code>SHAREPOINT_CLIENT_ID</code>
+                            <code>SHAREPOINT_CLIENT_SECRET</code>
+                            <code>SHAREPOINT_SITE_URL</code>
+                        </div>
+                        <p class="hint">Ask Antigravity to walk you through Azure AD app registration!</p>
+                    </div>
 
-            <div
-                id="quizContainer"
-                class="quiz-container"
-                style="display:none;"
-            >
+                    <div id="spDocList" class="doc-list" style="display:none;"></div>
 
-                <!-- Question -->
-
-                <div
-                    id="questionBox"
-                    class="question-box"
-                >
+                    <button class="btn btn-secondary" onclick="loadSharePointDocuments()">
+                        🔄 Refresh Documents
+                    </button>
                 </div>
 
-                <!-- Options -->
+            </section>
 
-                <div
-                    id="optionsBox"
-                    class="options-box"
-                >
-                </div>
+            <!-- ============================
+                 TAB 2: GENERATE
+            ============================= -->
 
-                <!-- Feedback -->
+            <section id="panel-generate" class="panel">
 
-                <div
-                    id="feedbackBox"
-                    class="feedback-box"
-                >
-                </div>
+                <div class="action-grid">
 
-                <!-- Quiz Buttons -->
-
-                <div class="quiz-buttons">
-
-                    <button
-                        id="submitAnswerBtn"
-                        onclick="submitAnswer()"
-                    >
-                        ✅ Submit Answer
+                    <button class="action-card" onclick="generateSummary()" id="btnSummary">
+                        <span class="action-icon">📄</span>
+                        <h3>Knowledge Summary</h3>
+                        <p>Extract key information from the KT document</p>
                     </button>
 
-                    <button
-                        id="nextQuestionBtn"
-                        onclick="nextQuestion()"
-                        style="display:none;"
-                    >
-                        ➡ Next Question
+                    <button class="action-card" onclick="generateAssessment()" id="btnAssessment">
+                        <span class="action-icon">✅</span>
+                        <h3>Assessment Quiz</h3>
+                        <p>Generate 5 MCQ questions to test understanding</p>
                     </button>
 
                 </div>
 
-            </div>
+                <!-- Loader -->
+                <div id="genLoader" class="loader-box" style="display:none;">
+                    <div class="spinner"></div>
+                    <p id="genLoaderText">Processing...</p>
+                </div>
+
+                <!-- Output -->
+                <div id="genOutput" class="output-card" style="display:none;"></div>
+
+                <!-- Quiz Container -->
+                <div id="quizContainer" class="quiz-container" style="display:none;">
+                    <div id="questionBox" class="question-box"></div>
+                    <div id="optionsBox" class="options-box"></div>
+                    <div id="feedbackBox" class="feedback-box"></div>
+                    <div class="quiz-buttons">
+                        <button id="submitAnswerBtn" class="btn btn-primary" onclick="submitAnswer()">✅ Submit Answer</button>
+                        <button id="nextQuestionBtn" class="btn btn-secondary" onclick="nextQuestion()" style="display:none;">Next Question ➡</button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ============================
+                 TAB 3: ASK AI (Semantic Search)
+            ============================= -->
+
+            <section id="panel-ask" class="panel">
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔍</span>
+                        <h2>Semantic Search</h2>
+                    </div>
+                    <p class="card-desc">Ask any question. The AI will find the most relevant parts of your KT document using semantic understanding — not just keywords.</p>
+
+                    <div id="indexStatus" class="index-status building" style="display:none;">
+                        <span class="status-dot pulse"></span>
+                        <span>Building semantic index... you can ask questions in the meantime.</span>
+                    </div>
+
+                    <div class="search-bar">
+                        <input
+                            type="text"
+                            id="question"
+                            placeholder="E.g. What is the escalation process for a P1 incident?"
+                            onkeydown="if(event.key==='Enter') askQuestion()"
+                        >
+                        <button class="btn btn-primary" onclick="askQuestion()" id="askBtn">Ask</button>
+                    </div>
+                </div>
+
+                <!-- Ask Loader -->
+                <div id="askLoader" class="loader-box" style="display:none;">
+                    <div class="spinner"></div>
+                    <p id="askLoaderText">Searching knowledge base...</p>
+                </div>
+
+                <!-- Answer Card -->
+                <div id="answerCard" class="output-card" style="display:none;">
+                    <div id="answerContent" class="result-card"></div>
+
+                    <!-- Citations -->
+                    <div id="citationsBox" class="citations-box" style="display:none;">
+                        <h4>📎 Sources</h4>
+                        <div id="citationsList"></div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ============================
+                 TAB 4: ASSIGNMENTS
+            ============================= -->
+
+            <section id="panel-assignments" class="panel">
+
+                <!-- Stats Row -->
+                <div id="assignmentStats" class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-number" id="statTotal">0</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-card pending">
+                        <span class="stat-number" id="statPending">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                    <div class="stat-card completed">
+                        <span class="stat-number" id="statCompleted">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-card rate">
+                        <span class="stat-number" id="statRate">0%</span>
+                        <span class="stat-label">Completion</span>
+                    </div>
+                </div>
+
+                <!-- New Assignment Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">➕</span>
+                        <h2>New Assignment</h2>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="assignDoc">Document / KT Topic</label>
+                            <input type="text" id="assignDoc" placeholder="e.g. Incident Management KT">
+                        </div>
+                        <div class="form-group">
+                            <label for="assignee">Assignee Name</label>
+                            <input type="text" id="assignee" placeholder="e.g. Rahul Sharma">
+                        </div>
+                        <div class="form-group">
+                            <label for="assignBy">Assigned By</label>
+                            <input type="text" id="assignBy" placeholder="e.g. Manager" value="Manager">
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="date" id="dueDate">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="createNewAssignment()">
+                        📋 Create Assignment
+                    </button>
+                </div>
+
+                <!-- Assignments Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">📋</span>
+                        <h2>All Assignments</h2>
+                        <button class="btn btn-ghost" onclick="loadAssignments()">🔄 Refresh</button>
+                    </div>
+                    <div id="assignmentsTable">
+                        <div class="empty-state">
+                            <span>📭</span>
+                            <p>No assignments yet. Create one above!</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
 
         </div>
 
-    </div>
+    </main>
 
     <script src="script.js"></script>
 
