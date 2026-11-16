@@ -2,8 +2,8 @@
 // Config
 // =====================
 
-const API_URL = "http://127.0.0.1:8000";
-// const API_URL = "https://binary-brains-kt-ai-5.onrender.com";
+// const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://binary-brains-kt-ai-5.onrender.com";
 
 let dotInterval;
 let quizQuestions = [];
